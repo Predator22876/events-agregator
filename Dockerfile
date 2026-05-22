@@ -6,8 +6,8 @@ RUN addgroup --system --gid 1000 appuser && \
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY --chown=appuser:appuser app.py .
+COPY --chown=appuser:appuser src src
 
 USER appuser
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8000"]
