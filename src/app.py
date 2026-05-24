@@ -2,14 +2,16 @@ import asyncio
 from contextlib import suppress
 from datetime import timedelta
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import RedirectResponse
 import uvicorn
 
 from src.api.events import router as events_router
 from src.api.sync import router as sync_router
 from src.api.tickets import router as tickets_router
-from src.database import async_session_maker
+from src.database import async_session_maker, get_db
 from src.services.sync_service import SyncService
 
 app = FastAPI()
@@ -48,7 +50,13 @@ async def on_shutdown() -> None:
 
 
 @app.get("/api/health")
-async def health_check():
+async def health_check(db: AsyncSession = Depends(get_db)):
+    try:
+        result = await db.execute(select(1))
+        result.scalar_one()
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="backend unavailable") from exc
+
     return {"status": "ok"}
 
 @app.get("/", include_in_schema=False)
