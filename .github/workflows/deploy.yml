@@ -26,6 +26,7 @@ jobs:
       - name: Run Ruff
         run: ruff check .
   build:
+    needs: lint
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.meta.outputs.tags }}
