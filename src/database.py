@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import (
 
 from src.config import settings
 
-
 engine = create_async_engine(
     settings.DB_URL,
     echo=True,  # для отладки SQL-запросов и ошибок

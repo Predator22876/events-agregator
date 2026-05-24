@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.ticket import Ticket
 from src.repositories.event_repository import EventRepository
 from src.repositories.ticket_repository import TicketRepository
-from src.services.events_provider import EventsProviderClient
 from src.schemas.ticket import TicketCreateRequest
+from src.services.events_provider import EventsProviderClient
 
 
 class TicketService:

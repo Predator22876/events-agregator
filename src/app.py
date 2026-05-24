@@ -2,11 +2,11 @@ import asyncio
 from contextlib import suppress
 from datetime import timedelta
 
+import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import RedirectResponse
-import uvicorn
 
 from src.api.events import router as events_router
 from src.api.sync import router as sync_router
