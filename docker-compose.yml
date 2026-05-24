@@ -26,6 +26,9 @@ services:
       - db
 
     command: uvicorn src.app:app --host 0.0.0.0 --port 8000
+
+    expose:
+      - "8000"
   
   nginx:
     image: nginx:alpine
