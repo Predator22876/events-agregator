@@ -42,14 +42,6 @@ jobs:
           pip install -r requirements.txt
 
       - name: Start Uvicorn and smoke test
-        env:
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
-          EVENTS_PROVIDER_URL: ${{ secrets.EVENTS_PROVIDER_URL }}
-          EVENTS_PROVIDER_API_KEY: ${{ secrets.EVENTS_PROVIDER_API_KEY }}
         run: |
           nohup uvicorn src.app:app --host 0.0.0.0 --port 8000 >/tmp/uvicorn.log 2>&1 &
 
