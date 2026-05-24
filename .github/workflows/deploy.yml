@@ -100,12 +100,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Validate secrets
+        run: |
+          if [ -z "${{ secrets.LMS_API_KEY }}" ]; then
+            echo "LMS_API_KEY is missing"
+            exit 1
+          fi
+
       - name: Send deploy request
         run: |
           HTTP_CODE=$(curl -s -o response.txt -w "%{http_code}" -X POST \
             -H "Content-Type: application/json" \
             -H "X-API-Key: ${{ secrets.LMS_API_KEY }}" \
-            -d '{"image":"ghcr.io/${{ needs.build.outputs.repo }}:${{ github.sha }}","repository":"${{ github.repository }}"}' \
+            -d '{
+              "image": "ghcr.io/${{ needs.build.outputs.repo }}:${{ github.sha }}",
+              "repository": "${{ github.repository }}",
+              "env": {
+                "DB_HOST": "${{ secrets.DB_HOST }}",
+                "DB_PORT": "${{ secrets.DB_PORT }}",
+                "DB_NAME": "${{ secrets.DB_NAME }}",
+                "DB_USER": "${{ secrets.DB_USER }}",
+                "DB_PASS": "${{ secrets.DB_PASS }}",
+                "EVENTS_PROVIDER_URL": "${{ secrets.EVENTS_PROVIDER_URL }}",
+                "EVENTS_PROVIDER_API_KEY": "${{ secrets.EVENTS_PROVIDER_API_KEY }}"
+              }
+            }' \
             https://lms.python-labs.ru/api/deploy-requests)
 
           if [ "$HTTP_CODE" != "200" ]; then
