@@ -7,15 +7,15 @@ class Settings(BaseSettings):
     EVENTS_PROVIDER_URL: str
     EVENTS_PROVIDER_API_KEY: str
 
-    DB_NAME: str
-    DB_HOST: str
-    DB_PORT: int
-    DB_USER: str
-    DB_PASS: str
+    POSTGRES_DATABASE_NAME: str
+    POSTGRES_HOST: str
+    POSTGRES_PORT: int
+    POSTGRES_USERNAME: str
+    POSTGRES_PASSWORD: str
 
     @property
     def DB_URL(self):
-        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        return f"postgresql+asyncpg://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE_NAME}"
 
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).resolve().parents[1] / ".env"),
