@@ -44,8 +44,20 @@ jobs:
       - name: Start Uvicorn and smoke test
         run: |
           nohup uvicorn src.app:app --host 0.0.0.0 --port 8000 >/tmp/uvicorn.log 2>&1 &
-          sleep 5
-          curl -f http://127.0.0.1:8000/api/health
+
+          for i in {1..30}; do
+            if curl -f http://127.0.0.1:8000/api/health; then
+              echo "App is up!"
+              exit 0
+            fi
+
+            echo "Waiting for app..."
+            sleep 2
+          done
+
+          echo "App failed to start"
+          cat /tmp/uvicorn.log
+          exit 1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
