@@ -17,7 +17,9 @@ class EventRepository:
         offset: int,
         limit: int,
     ) -> list[Event]:
-        stmt = select(Event).options(selectinload(Event.place)).order_by(Event.event_time)
+        stmt = (
+            select(Event).options(selectinload(Event.place)).order_by(Event.event_time)
+        )
 
         if date_from is not None:
             boundary = datetime.combine(date_from, time.min, tzinfo=timezone.utc)
@@ -39,9 +41,7 @@ class EventRepository:
 
     async def get_by_id(self, event_id: str) -> Event | None:
         stmt = (
-            select(Event)
-            .options(selectinload(Event.place))
-            .where(Event.id == event_id)
+            select(Event).options(selectinload(Event.place)).where(Event.id == event_id)
         )
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()

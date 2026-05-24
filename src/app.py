@@ -59,9 +59,11 @@ async def health_check(db: AsyncSession = Depends(get_db)):
 
     return {"status": "ok"}
 
+
 @app.get("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url="/docs")
+
 
 if __name__ == "__main__":
     uvicorn.run("src.app:app", host="0.0.0.0", reload=True)
