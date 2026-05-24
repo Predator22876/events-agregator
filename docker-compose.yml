@@ -26,6 +26,15 @@ services:
       - db
 
     command: uvicorn src.app:app --host 0.0.0.0 --port 8000
+  
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
 
 
 volumes:
