@@ -16,7 +16,12 @@ class Settings(BaseSettings):
 
     @property
     def DB_URL(self):
-        return f"postgresql+asyncpg://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DATABASE_NAME}"
+        return (
+            "postgresql+asyncpg://"
+            f"{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@"
+            f"{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/"
+            f"{self.POSTGRES_DATABASE_NAME}"
+        )
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
