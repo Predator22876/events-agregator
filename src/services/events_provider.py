@@ -8,14 +8,17 @@ from src.config import settings
 
 def normalize_url(url: str) -> str:
     parsed = urlparse(url)
-    if parsed.scheme == "http":
-        parsed = parsed._replace(scheme="https")
     return urlunparse(parsed)
 
 
 class EventsProviderClient:
     def __init__(self) -> None:
-        self.base_url = normalize_url(settings.EVENTS_PROVIDER_URL).rstrip("/")
+        base_url = (
+            settings.EVENTS_PROVIDER_INTERNAL_URL
+            if settings.EVENTS_PROVIDER_INTERNAL_URL
+            else settings.EVENTS_PROVIDER_URL
+        )
+        self.base_url = normalize_url(base_url).rstrip("/")
         self.headers = {
             "x-api-key": settings.EVENTS_PROVIDER_API_KEY,
         }
