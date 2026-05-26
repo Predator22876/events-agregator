@@ -1,5 +1,6 @@
 [tool.ruff.format]
 exclude = [
     "config.py",
-    "database.py"
+    "database.py",
+    "events_provider.py"
 ]
