@@ -71,13 +71,29 @@ async def get_event_seats(
 ):
     service = EventService(db)
     event = await service.get_event(event_id)
+
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
+
     print("EVENT:", event)
+
+    if event.status != "published":
+        return SeatsResponse(
+            event_id=event_id,
+            available_seats=[],
+        )
+
     client = EventsProviderClient()
-    result = await client.get_available_seats(event_id)
+
+    try:
+        result = await client.get_available_seats(event_id)
+    except Exception as e:
+        print("SEATS ERROR:", str(e))
+        result = {"available_seats": []}
+
     print("SEATS RESPONSE:", result)
+
     return SeatsResponse(
         event_id=event_id,
-        available_seats=result.get("seats", []),
+        available_seats=result.get("available_seats", []),
     )
