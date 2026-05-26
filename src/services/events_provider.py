@@ -13,11 +13,7 @@ def normalize_url(url: str) -> str:
 
 class EventsProviderClient:
     def __init__(self) -> None:
-        base_url = (
-            settings.EVENTS_PROVIDER_INTERNAL_URL
-            if settings.EVENTS_PROVIDER_INTERNAL_URL
-            else settings.EVENTS_PROVIDER_URL
-        )
+        base_url = settings.EVENTS_PROVIDER_URL
         self.base_url = normalize_url(base_url).rstrip("/")
         self.headers = {
             "x-api-key": settings.EVENTS_PROVIDER_API_KEY,
@@ -52,13 +48,14 @@ class EventsProviderClient:
         event_id: str,
     ) -> dict[str, Any]:
         url = normalize_url(f"{self.base_url}/api/events/{event_id}/seats/")
-
+        print("GET SEATS URL:", url)
         async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+            print("Я ЗАПУСКАЮСЬ")
             response = await client.get(
                 url,
                 headers=self.headers,
             )
-
+            print("GET SEATS RESPONSE:", response.json())
             response.raise_for_status()
 
             return response.json()
