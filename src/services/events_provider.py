@@ -48,18 +48,33 @@ class EventsProviderClient:
         event_id: str,
     ) -> dict[str, Any]:
         url = normalize_url(f"{self.base_url}/api/events/{event_id}/seats/")
-        print("GET SEATS URL:", url)
-        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
-            print("Я ЗАПУСКАЮСЬ")
-            response = await client.get(
-                url,
-                headers=self.headers,
-            )
-            print("STATUS:", response.status_code)
-            print("TEXT:", response.text)
-            response.raise_for_status()
 
-            return response.json()
+        try:
+            async with httpx.AsyncClient(
+                timeout=30.0,
+                follow_redirects=True,
+            ) as client:
+
+                response = await client.get(
+                    url,
+                    headers=self.headers,
+                )
+
+                if response.status_code >= 500:
+                    return {"available_seats": []}
+
+                response.raise_for_status()
+
+                data = response.json()
+
+                if not isinstance(data, dict):
+                    return {"available_seats": []}
+
+                return data
+
+        except Exception as e:
+            print("SEATS ERROR:", str(e))
+            return {"available_seats": []}
 
     async def register_ticket(
         self,
