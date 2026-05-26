@@ -95,5 +95,5 @@ async def get_event_seats(
 
     return SeatsResponse(
         event_id=event_id,
-        available_seats=result.get("available_seats", []),
+        available_seats=result.get("seats", []),
     )
