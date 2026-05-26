@@ -67,7 +67,13 @@ async def get_event(
 @router.get("/{event_id}/seats", response_model=SeatsResponse)
 async def get_event_seats(
     event_id: str,
+    db: AsyncSession = Depends(get_db),
 ):
+    service = EventService(db)
+    event = await service.get_event(event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
     client = EventsProviderClient()
     result = await client.get_available_seats(event_id)
     return SeatsResponse(
