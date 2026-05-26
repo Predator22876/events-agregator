@@ -59,7 +59,7 @@ class EventsProviderClient:
                     url,
                     headers=self.headers,
                 )
-
+                print("RESPONSE_STATUS:", response.status_code, "RESPONSE_TEXT:", response.text)
                 if response.status_code >= 500:
                     return {"available_seats": []}
 
