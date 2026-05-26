@@ -73,9 +73,10 @@ async def get_event_seats(
     event = await service.get_event(event_id)
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
-
+    print("EVENT:", event)
     client = EventsProviderClient()
     result = await client.get_available_seats(event_id)
+    print("SEATS RESPONSE:", result)
     return SeatsResponse(
         event_id=event_id,
         available_seats=result.get("available_seats", []),
