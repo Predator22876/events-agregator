@@ -55,7 +55,8 @@ class EventsProviderClient:
                 url,
                 headers=self.headers,
             )
-            print("GET SEATS RESPONSE:", response.json())
+            print("STATUS:", response.status_code)
+            print("TEXT:", response.text)
             response.raise_for_status()
 
             return response.json()
