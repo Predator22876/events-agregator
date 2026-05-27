@@ -54,7 +54,7 @@ class EventsProviderClient:
                 timeout=30.0,
                 follow_redirects=True,
             ) as client:
-
+                
                 response = await client.get(
                     url,
                     headers=self.headers,

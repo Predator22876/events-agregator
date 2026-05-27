@@ -31,4 +31,4 @@ async def delete_ticket(
 ):
     service = TicketService(db)
     success = await service.cancel_ticket(ticket_id)
-    return TicketDeleteResponse(success=success)
+    return {"success": success}

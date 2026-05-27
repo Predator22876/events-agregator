@@ -55,10 +55,44 @@ class TicketService:
 
     async def cancel_ticket(self, ticket_id: UUID) -> bool:
         ticket = await self.ticket_repo.get_by_id(ticket_id)
-        if not ticket:
-            raise HTTPException(status_code=404, detail="Ticket not found")
 
-        await self.client.unregister_ticket(str(ticket.event_id), str(ticket.ticket_id))
+        if not ticket:
+            raise HTTPException(
+                status_code=404,
+                detail="Ticket not found",
+            )
+
+        event = await self.event_repo.get_by_id(str(ticket.event_id))
+
+        if not event:
+            raise HTTPException(
+                status_code=404,
+                detail="Event not found",
+            )
+
+        now = datetime.now(timezone.utc)
+
+        event_time = event.event_time
+
+        if event_time.tzinfo is None:
+            event_time = event_time.replace(tzinfo=timezone.utc)
+
+        if event_time < now:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot cancel registration for past event",
+            )
+
+        try:
+            await self.client.unregister_ticket(
+                str(ticket.event_id),
+                str(ticket.ticket_id),
+            )
+        except Exception as e:
+            print("UNREGISTER ERROR:", str(e))
+
         await self.ticket_repo.delete(ticket)
+
         await self.db.commit()
+
         return True
