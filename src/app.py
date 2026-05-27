@@ -4,7 +4,8 @@ from datetime import timedelta
 import sys
 from pathlib import Path
 from fastapi.exceptions import RequestValidationError
-from uvicorn import Request, uvicorn
+from fastapi import Request
+import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
