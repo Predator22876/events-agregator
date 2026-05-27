@@ -3,5 +3,6 @@ exclude = [
     "config.py",
     "database.py",
     "events_provider.py",
-    "events.py"
+    "events.py",
+    "app.py"
 ]
