@@ -3,11 +3,12 @@ from contextlib import suppress
 from datetime import timedelta
 import sys
 from pathlib import Path
-import uvicorn
+from fastapi.exceptions import RequestValidationError
+from uvicorn import Request, uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.responses import RedirectResponse
+from starlette.responses import JSONResponse, RedirectResponse
 
 sys.path.append(str(Path(__file__).parent.parent))
 
@@ -21,6 +22,18 @@ app = FastAPI()
 app.include_router(events_router)
 app.include_router(tickets_router)
 app.include_router(sync_router)
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(
+    request: Request,
+    exc: RequestValidationError,
+):
+    return JSONResponse(
+        status_code=400,
+        content={
+            "detail": exc.errors(),
+        },
+    )
 
 sync_task: asyncio.Task | None = None
 
